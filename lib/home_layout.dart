@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-import 'dart:html' as html;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -66,15 +64,6 @@ class _HomeLayoutState extends State<HomeLayout> {
             SizedBox(height: 8.0),
             Text(post.postText),
             SizedBox(height: 16.0),
-            post.imageBytes != null
-                ? Image.memory(
-                    post.imageBytes!,
-                    width: double.infinity,
-                    height: 200.0,
-                    fit: BoxFit.cover,
-                  )
-                : SizedBox.shrink(),
-            SizedBox(height: 16.0),
             Row(
               children: [
                 IconButton(
@@ -97,27 +86,7 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   Future<void> _createPostDialog(BuildContext context) async {
     TextEditingController _textEditingController = TextEditingController();
-    Uint8List? _imageBytes;
-
-    html.InputElement uploadInput = html.InputElement()
-      ..type = 'file'
-      ..accept = 'image/*';
-
-    uploadInput.click();
-
-    uploadInput.onChange.listen((e) {
-      final files = uploadInput.files;
-      if (files!.isNotEmpty) {
-        final fileReader = html.FileReader();
-        fileReader.readAsArrayBuffer(files[0]);
-        fileReader.onLoadEnd.listen((event) {
-          setState(() {
-            _imageBytes = Uint8List.fromList(
-                List<int>.from(fileReader.result as List<dynamic>));
-          });
-        });
-      }
-    });
+    bool _imageSelected = false;
 
     return showDialog<void>(
       context: context,
@@ -126,38 +95,38 @@ class _HomeLayoutState extends State<HomeLayout> {
           title: Text('Criar Novo Post'),
           content: Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  uploadInput.click();
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 100.0,
-                  color: Colors.grey[300],
-                  child: _imageBytes != null
-                      ? Image.memory(
-                          _imageBytes!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        )
-                      : Icon(Icons.add_a_photo),
+              TextField(
+                controller: _textEditingController,
+                decoration: InputDecoration(
+                  hintText: 'Digite seu post aqui...',
                 ),
+                maxLines: 3,
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
                   // Lógica para adicionar o novo post
-                  String postText = _textEditingController.text;
-                  // Adicionar o novo post à lista
-                  setState(() {
-                    _posts.add(Post(
-                      userName: 'Usuário Novo',
-                      postText: postText,
-                      likes: 0,
-                      imageBytes: _imageBytes,
+                  String postText = _textEditingController.text.trim();
+                  bool containsLetters = RegExp(r'[a-zA-Z]').hasMatch(postText);
+
+                  if (postText.isNotEmpty && containsLetters) {
+                    // Adicionar o novo post à lista
+                    setState(() {
+                      _posts.add(Post(
+                        userName: 'Usuário Novo',
+                        postText: postText,
+                        likes: 0,
+                      ));
+                    });
+                    Navigator.of(context).pop();
+                  } else {
+                    // Mostrar uma mensagem de erro se o texto estiver vazio ou não conter letras
+                    String errorMessage = 'Por favor, escreva algo com pelo menos uma letra no post.';
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(errorMessage),
+                      duration: Duration(seconds: 2),
                     ));
-                  });
-                  Navigator.of(context).pop();
+                  }
                 },
                 child: Text('Concluir'),
               ),
@@ -180,12 +149,6 @@ class Post {
   final String userName;
   final String postText;
   int likes;
-  final Uint8List? imageBytes;
 
-  Post({
-    required this.userName,
-    required this.postText,
-    required this.likes,
-    this.imageBytes,
-  });
+  Post({required this.userName, required this.postText, required this.likes});
 }
