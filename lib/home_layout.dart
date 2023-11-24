@@ -24,6 +24,7 @@ class HomeLayout extends StatefulWidget {
 
 class _HomeLayoutState extends State<HomeLayout> {
   List<Post> _posts = [];
+  TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +32,13 @@ class _HomeLayoutState extends State<HomeLayout> {
       appBar: AppBar(
         title: Text('Posts'),
       ),
-      body: ListView.builder(
-        itemCount: _posts.length,
-        itemBuilder: (context, index) {
-          return _buildPost(_posts[index]);
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildPostList(),
+            SizedBox(height: 80.0), // Espaço adicional para evitar o overflow
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -43,6 +46,17 @@ class _HomeLayoutState extends State<HomeLayout> {
         },
         child: Icon(Icons.add),
       ),
+    );
+  }
+
+  Widget _buildPostList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: _posts.length,
+      itemBuilder: (context, index) {
+        return _buildPost(_posts[index]);
+      },
     );
   }
 
@@ -84,8 +98,7 @@ class _HomeLayoutState extends State<HomeLayout> {
     );
   }
 
-  Future<void> _createPostDialog(BuildContext context) async {
-    TextEditingController _textEditingController = TextEditingController();
+    Future<void> _createPostDialog(BuildContext context) async {
     bool _imageSelected = false;
 
     return showDialog<void>(
@@ -93,51 +106,62 @@ class _HomeLayoutState extends State<HomeLayout> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Criar Novo Post'),
-          content: Column(
-            children: [
-              TextField(
-                controller: _textEditingController,
-                decoration: InputDecoration(
-                  hintText: 'Digite seu post aqui...',
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: _textEditingController,
+                  decoration: InputDecoration(
+                    hintText: 'Digite seu post aqui...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  maxLines: 2,
                 ),
-                maxLines: 3,
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () async {
-                  // Lógica para adicionar o novo post
-                  String postText = _textEditingController.text.trim();
-                  bool containsLetters = RegExp(r'[a-zA-Z]').hasMatch(postText);
+                SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        // Lógica para adicionar o novo post
+                        String postText = _textEditingController.text.trim();
+                        bool containsLetters = RegExp(r'[a-zA-Z]').hasMatch(postText);
 
-                  if (postText.isNotEmpty && containsLetters) {
-                    // Adicionar o novo post à lista
-                    setState(() {
-                      _posts.add(Post(
-                        userName: 'Usuário Novo',
-                        postText: postText,
-                        likes: 0,
-                      ));
-                    });
-                    Navigator.of(context).pop();
-                  } else {
-                    // Mostrar uma mensagem de erro se o texto estiver vazio ou não conter letras
-                    String errorMessage = 'Por favor, escreva algo com pelo menos uma letra no post.';
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(errorMessage),
-                      duration: Duration(seconds: 2),
-                    ));
-                  }
-                },
-                child: Text('Concluir'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Cancelar a criação do post
-                  Navigator.of(context).pop();
-                },
-                child: Text('Cancelar'),
-              ),
-            ],
+                        if (postText.isNotEmpty && containsLetters) {
+                          // Adicionar o novo post à lista
+                          setState(() {
+                            _posts.add(Post(
+                              userName: 'Usuário Novo',
+                              postText: postText,
+                              likes: 0,
+                            ));
+                          });
+                          Navigator.of(context).pop();
+                        } else {
+                          // Mostrar uma mensagem de erro se o texto estiver vazio ou não conter letras
+                          String errorMessage =
+                              'Por favor, escreva algo com pelo menos uma letra no post.';
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(errorMessage),
+                            duration: Duration(seconds: 2),
+                          ));
+                        }
+                      },
+                      child: Text('Concluir'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Cancelar a criação do post
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cancelar'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

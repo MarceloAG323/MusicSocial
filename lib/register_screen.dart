@@ -1,52 +1,77 @@
-// register_screen.dart
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'login_screen.dart'; // Importe o componente LoginScreen
 
-class RegisterScreen extends StatelessWidget {
+import 'home_screen.dart';
+
+class RegisterScreenPage extends StatelessWidget {
+  TextEditingController registerUsernameController = TextEditingController();
+  TextEditingController registerPasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Registro')),
-      body: Padding(padding: EdgeInsets.all(16.0), child: RegisterForm()),
-    );
-  }
-}
-
-class RegisterForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextField(decoration: InputDecoration(labelText: 'Nome')),
-        SizedBox(height: 16.0),
-        TextField(decoration: InputDecoration(labelText: 'Email')),
-        SizedBox(height: 16.0),
-        TextField(decoration: InputDecoration(labelText: 'Password'), obscureText: true),
-        SizedBox(height: 32.0),
-        ElevatedButton(
-          onPressed: () {
-            // Simule a lógica de registro bem-sucedido
-            // Em um aplicativo real, você deve salvar os detalhes do usuário
-            bool registrationSuccessful = true;
-
-            if (registrationSuccessful) {
-              // Se o registro for bem-sucedido, navegue para a tela de login
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
-            }
-          },
-          child: Text('Registrar'),
+      appBar: AppBar(title: Text('Registrar')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/your_logo.png', // Substitua pelo caminho da imagem do seu logo
+                height: 100.0,
+              ),
+              SizedBox(height: 20.0),
+              TextFormField(
+                controller: registerUsernameController,
+                decoration: InputDecoration(
+                  labelText: 'Novo Usuário',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: registerPasswordController,
+                decoration: InputDecoration(
+                  labelText: 'Nova Senha',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  if (registerUsernameController.text.isNotEmpty && registerPasswordController.text.isNotEmpty) {
+                    // Lógica de registro
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Preencha todos os campos para se registrar.'),
+                      ),
+                    );
+                  }
+                },
+                child: Text('Registrar'),
+              ),
+              SizedBox(height: 16.0),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Voltar para a tela de login
+                },
+                child: Text('Já tem uma conta? Faça login'),
+              ),
+            ],
+          ),
         ),
-        SizedBox(height: 16.0),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Já tem uma conta? Faça login'),
-        ),
-      ],
+      ),
     );
   }
 }
