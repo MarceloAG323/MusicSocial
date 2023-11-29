@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
+      darkTheme: ThemeData.dark(),
       home: HomeLayout(),
     );
   }
@@ -25,12 +26,25 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   List<Post> _posts = [];
   TextEditingController _textEditingController = TextEditingController();
+  bool _isDarkMode = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Posts'),
+        actions: [
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.person),
+                onPressed: () {
+                  _openUserSettingsDialog(context);
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -45,6 +59,16 @@ class _HomeLayoutState extends State<HomeLayout> {
           await _createPostDialog(context);
         },
         child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            // IconButton removido aqui
+          ],
+        ),
       ),
     );
   }
@@ -98,7 +122,7 @@ class _HomeLayoutState extends State<HomeLayout> {
     );
   }
 
-    Future<void> _createPostDialog(BuildContext context) async {
+  Future<void> _createPostDialog(BuildContext context) async {
     bool _imageSelected = false;
 
     return showDialog<void>(
@@ -163,6 +187,32 @@ class _HomeLayoutState extends State<HomeLayout> {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+  void _openUserSettingsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // Adicione o código do diálogo para alterar o nome do usuário aqui
+        return AlertDialog(
+          title: Text('Alterar Nome de Usuário'),
+          content: TextField(
+            decoration: InputDecoration(
+              hintText: 'Novo Nome de Usuário',
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Lógica para salvar o novo nome de usuário
+                Navigator.of(context).pop();
+              },
+              child: Text('Salvar'),
+            ),
+          ],
         );
       },
     );
