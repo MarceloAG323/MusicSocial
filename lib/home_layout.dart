@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,6 +28,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   List<Post> _posts = [];
   TextEditingController _textEditingController = TextEditingController();
   bool _isDarkMode = false;
+  String _userName = 'Usuário Novo';
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,7 @@ class _HomeLayoutState extends State<HomeLayout> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              post.userName,
+              'Seu Nome é $_userName',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
@@ -157,7 +159,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                           // Adicionar o novo post à lista
                           setState(() {
                             _posts.add(Post(
-                              userName: 'Usuário Novo',
+                              userName: _userName,
                               postText: postText,
                               likes: 0,
                             ));
@@ -196,23 +198,59 @@ class _HomeLayoutState extends State<HomeLayout> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // Adicione o código do diálogo para alterar o nome do usuário aqui
-        return AlertDialog(
-          title: Text('Alterar Nome de Usuário'),
-          content: TextField(
-            decoration: InputDecoration(
-              hintText: 'Novo Nome de Usuário',
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                // Lógica para salvar o novo nome de usuário
-                Navigator.of(context).pop();
-              },
-              child: Text('Salvar'),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Alterar Nome de Usuário'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        _userName = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Novo Nome de Usuário',
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Lógica para salvar o novo nome de usuário
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Salvar'),
+                        ),
+                      ),
+                      SizedBox(width: 10.0), // Espaço entre os botões
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Lógica para cancelar
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Cancelar'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navegar para a página de login
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                    },
+                    child: Text('Ir para a Página de Login'),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
