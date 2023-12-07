@@ -195,66 +195,76 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
 
   void _openUserSettingsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text('Alterar Nome de Usuário'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        _userName = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Novo Nome de Usuário',
+  TextEditingController _textController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Seu Nome é: $_userName'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _textController,
+                        onChanged: (value) {
+                          // Atualiza temporariamente o título enquanto digita
+                          setState(() {});
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Novo Nome de Usuário',
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Lógica para salvar o novo nome de usuário
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('Salvar'),
-                        ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _userName = _textController.text;
+                          });
+                        },
+                        child: Text('Salvar'),
                       ),
-                      SizedBox(width: 10.0), // Espaço entre os botões
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Lógica para cancelar
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('Cancelar'),
-                        ),
+                    ),
+                    SizedBox(width: 10.0), // Espaço entre os botões
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Lógica para cancelar
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancelar'),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 10.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Navegar para a página de login
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                    },
-                    child: Text('Ir para a Página de Login'),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navegar para a página de login
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                  child: Text('Ir para a Página de Login'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 }
 
 class Post {
