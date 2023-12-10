@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "843412077013",
+    "project_id": "musicsocial-90b82",
+    "storage_bucket": "musicsocial-90b82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843412077013:android:24ef0cad26cb483aa5a55c",
+        "android_client_info": {
+          "package_name": "com.example.musicsocial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh2hePTe9qUBROdWhDaGRHyy_xcKqS3HU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843412077013:android:875727cbd91ecbd9a5a55c",
+        "android_client_info": {
+          "package_name": "com.example.musicsocial_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh2hePTe9qUBROdWhDaGRHyy_xcKqS3HU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
