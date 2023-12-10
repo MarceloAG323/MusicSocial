@@ -27,6 +27,7 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   List<Post> _posts = [];
   TextEditingController _textEditingController = TextEditingController();
+  bool _isDarkMode = false;
   String _userName = 'Usuário Novo';
 
   @override
