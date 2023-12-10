@@ -94,7 +94,7 @@ class _HomeLayoutState extends State<HomeLayout> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Seu Nome é $_userName',
+              '$_userName',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
